@@ -1,44 +1,62 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 
-import { FormControl, Select, makeStyles } from '@material-ui/core'
-import { fetchCountries } from '../../Api';
+import { makeStyles } from "@material-ui/core";
+import { fetchCountries } from "../../Api";
 
-const useStyles = makeStyles(theme => ({
-    formControl: {
-        width: '25%',
-        margin: theme.spacing(3)
-    }
-})
-)
+import { List, ListItem, ListItemText } from "@material-ui/core";
 
-const CounterPicker = ({ countrySelected, handleCountry }) => {
-    const classes = useStyles()
-    const [countries, setCountries] = useState([]);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    maxWidth: 360,
+    maxHeight: 300,
+    overflowY: "scroll",
+  },
+}));
 
-    useEffect(() => {
-        const fetch = async () => {
-            setCountries(await fetchCountries())
+const CounterPicker = ({ countrySelected, handleCountry, countryFilter }) => {
+  const classes = useStyles();
+  const [countries, setCountries] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-        }
+  useEffect(() => {
+    const fetch = async () => {
+      setCountries(await fetchCountries());
+    };
 
-        fetch();
-    }, [])
+    fetch();
+  }, []);
 
-    // console.log(countries);
+  const countriesFiltered = () =>
+    countries.filter((country) =>
+      country.location.toLowerCase().includes(countryFilter.toLowerCase())
+    );
 
-    return (
-        <FormControl className={classes.formControl}>
-            <Select
-                native
-                value={countrySelected}
-                onChange={(e) => handleCountry(e.target.value)}
-
+  return (
+    <div>
+      <List
+        component="nav"
+        aria-label="secondary mailbox folder"
+        className={classes.root}
+      >
+        {countriesFiltered().map((country, i) => {
+          return (
+            <ListItem
+              button
+              key={i}
+              selected={selectedIndex === i}
+              onClick={(e) => {
+                handleCountry(countriesFiltered()[i]);
+                setSelectedIndex(i);
+              }}
             >
-                <option value="">Global</option>
-                {countries.map((country, i) => <option key={i} value={country}>{country}</option>)}
-            </Select>
-        </FormControl>
-    )
-}
+              <ListItemText primary={country.location} />
+            </ListItem>
+          );
+        })}
+      </List>
+    </div>
+  );
+};
 
-export default CounterPicker
+export default CounterPicker;

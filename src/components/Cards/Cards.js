@@ -1,42 +1,49 @@
-import React from 'react'
+import React from "react";
 
-import Card from './Card/Card';
+import Card from "./Card/Card";
 
-import {
-    Grid, 
-    makeStyles
-} from '@material-ui/core';
+import { Grid, makeStyles } from "@material-ui/core";
 
-const useStyle = makeStyles(theme => ({
-    container: {
-        margin: '5% 0px'
-    }
-})
-)
+const useStyle = makeStyles((theme) => ({
+  container: {
+    margin: "2rem 0",
+  },
+}));
 
-const Cards = ({ data : {confirmed , recovered, deaths , lastUpdate} }) => {
+const Cards = ({ data: { confirmed, deaths, recovered } }) => {
+  const classes = useStyle();
+  if (!confirmed) {
+    return <h2>Loading...</h2>;
+  }
 
-    // console.log(confirmed);
-    // console.log(lastUpdate);
+  return (
+    <div className={classes.container}>
+      <Grid container spacing={4} justify="center">
+        {/* <div className="cards"> */}
+        <Card
+          label="Infected"
+          value={confirmed.value}
+          // date={lastUpdate}
+          subtitle="Infected"
+          color="#231AA2"
+        />
+        <Card
+          label="Recovered"
+          value={recovered.value}
+          // date={lastUpdate}
+          subtitle="Recovered"
+          color="#17C823"
+        />
+        <Card
+          label="Dead"
+          value={deaths.value}
+          // date={lastUpdate}
+          subtitle="Dead"
+          color="#C90C1C"
+        />
+      </Grid>
+    </div>
+  );
+};
 
-    const classes = useStyle();
-    if(!confirmed) {
-        return ( 
-            <h2>Loading...</h2>
-        )
-    }
-
-    return (
-        <div className={classes.container}>
-            <Grid container spacing={4} justify="center">
-                <Card  label="Infectados" value={confirmed.value} date={lastUpdate}  subtitle="activos" color="#231AA2"/>
-                <Card  label="Recuperados" value={recovered.value} date={lastUpdate}  subtitle="recuperados" color="#17C823"/>
-                <Card  label="Muertes" value={deaths.value} date={lastUpdate}  subtitle="muertes" color="#C90C1C"/>
-            </Grid>
-
-        </div>
-
-    )
-}
-
-export default Cards
+export default Cards;
